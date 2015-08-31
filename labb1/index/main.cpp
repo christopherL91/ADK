@@ -5,7 +5,7 @@
 #include "gen_index.h"
 
 /**
-	Example usage: ./index infile outfile
+	Example usage: ./index infile
 */
 
 int main(int argc, char const *argv[]) {
