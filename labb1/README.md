@@ -1,3 +1,3 @@
-When you need to indexing your index
+När man inser att ens index är så dåligt att man måste indexera index...
 
 [![Deeper](http://i1.kym-cdn.com/photos/images/facebook/000/531/557/a88.jpg)]()
