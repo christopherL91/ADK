@@ -6,4 +6,4 @@ This repository contains all the code for the KTH course Adk15 (DD1352)
 
 [![forthebadge](http://forthebadge.com/images/badges/built-with-swag.svg)](http://forthebadge.com)
 
-[![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
+[![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://en.wikipedia.org/wiki/MIT_License)
