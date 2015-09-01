@@ -9,10 +9,15 @@
 /**
     This function will generate an index for the given input.
 */
-const unsigned char letters[] = {'a', 'e','h','l','o','s','t'};
+const unsigned char letters[] = {'a', 'e','h','l','o','s','t', '\0'};
 int getFileForChar(unsigned char c) {
-    int i;
-    for(i = 0; c >= letters[i] && i < 7; ++i) {}
+    int i = 0;
+    while(letters[i] != '\0') {
+        if(letters[i] > c) {
+            return i-1;
+        }
+        i++;
+    }
     return i-1;
 }
 
