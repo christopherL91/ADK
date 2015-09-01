@@ -12,7 +12,6 @@
 #include <cstring>
 #include <regex>
 
-
 const char *COLOR_NC="\e[0m";
 const char *COLOR_WHITE="\e[1;37m";
 const char *COLOR_BLACK="\e[0;30m";
@@ -153,11 +152,12 @@ int main(int argc, char const *argv[]) {
                         int before = pos-30;
                         dictionary.seekg(std::max(before,0));
                         dictionary.read(buffer,length);
-                        strncpy(buffer, buffer, dictionary.gcount());
-                        // Remove all newlines
-                        *std::remove(buffer, buffer+dictionary.gcount(), '\n') = ' ';
-                        *std::remove(buffer, buffer+dictionary.gcount(), '\r') = '\0';
-                        std::cout << buffer << std::endl;
+                        // Remove all newline
+                        std::string output(buffer, 0, dictionary.gcount());
+			if(output.find("\n") != -1 ) {
+				output.replace(output.find("\n"), 1, " ");
+			}		
+                        std::cout << output << std::endl;
                     }
                 }
                 break;
