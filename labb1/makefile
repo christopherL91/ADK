@@ -1,14 +1,16 @@
 CC=g++
 CFLAGS=-c -Wall -std=c++11 -O3
+SOURCES:=*.cpp
+OBJECTS:=$(SOURCES:.cpp=.o)
 EXECUTABLE=konkordans
 
-all: Concordans
+all: $(SOURCES) $(EXECUTABLE)
 
-Concordans: main.o
-	$(CC) main.o -o $(EXECUTABLE)
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $@
 
-main.o: main.cpp
-	$(CC) $(CFLAGS) main.cpp
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
 
 clean:
 	-rm -rf *.o $(EXECUTABLE)

@@ -7,9 +7,9 @@ TOKENIZEREXEC=tokenizer
 all: index
 
 $(INDEXFILE): tokenizer.c korpus
-	export LC_COLLATE=C
 	cc ./tokenizer.c -o $(TOKENIZEREXEC)
-	./$(TOKENIZEREXEC) < korpus | sort > $(INDEXFILE)
+	./$(TOKENIZEREXEC) < korpus | \
+		LC_COLLATE='C' LC_ALL='C' sort > $(INDEXFILE)
 
 index: main.o gen_index.o $(INDEXFILE)
 	$(CC) main.o gen_index.o -o $(EXECUTABLE)
@@ -22,6 +22,6 @@ gen_index.o: gen_index.cpp
 	$(CC) $(CFLAGS) gen_index.cpp
 
 clean:
-	rm -rf *.o $(EXECUTABLE) $(TOKENIZEREXEC)
+	rm -rf *.o $(EXECUTABLE) $(TOKENIZEREXEC) $(INDEXFILE)
 	rm -rf *.idx
 
