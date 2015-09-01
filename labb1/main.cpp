@@ -5,6 +5,7 @@
 #include <sstream>
 #include <ctime>
 #include <vector>
+#include <map>
 #include <set>
 #include <glob.h>
 #include <cstdlib>
@@ -79,8 +80,13 @@ int main(int argc, char const *argv[]) {
     std::ifstream dictionary(dictionary_name,std::ios::in);
 
     std::string file_glob = argv[2];
-    auto files = glob(file_glob);
+    auto filenames = glob(file_glob);
+    std::map<std::string,std::shared_ptr<std::istream>> files;
+    for(auto filename: filenames) {
+        files[filename] = std::make_shared<std::ifstream>(filename);
+    }
     std::string word;
+
     while (std::cout << COLOR_LIGHT_GREEN << "Search for a word> " << COLOR_NC,std::getline(std::cin, word)) {
         if(word == "") {
             continue;
@@ -92,7 +98,7 @@ int main(int argc, char const *argv[]) {
         char first = word[0];
         char c = getFileName(first);
         std::string file_name = "";
-        for(auto glob_filename : files) {
+        for(auto glob_filename : filenames) {
             if(base_name(glob_filename)[0] == c) {
                 file_name = glob_filename;
                 break;
@@ -103,9 +109,8 @@ int main(int argc, char const *argv[]) {
             dictionary.close();
             return EXIT_FAILURE;
         }
-
-        std::ifstream in(file_name,std::ios::in);
-        if(!in) {
+        std::istream &index = *files[file_name];
+        if(!index) {
             std::cerr << "Could not open file" << std::endl;
             dictionary.close();
             return EXIT_FAILURE;
@@ -114,7 +119,7 @@ int main(int argc, char const *argv[]) {
         std::string result;
         std::string search = word+" ";
         bool found = false;
-        while (std::getline(in, line)) {
+        while (std::getline(index, line)) {
             if(line.find(search) == 0) {
                 //Found!
                 found = true;
@@ -164,7 +169,9 @@ int main(int argc, char const *argv[]) {
         clock_t end = clock();
         double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
         std::cout << std::endl << COLOR_LIGHT_BLUE << "Time to perform search: " << COLOR_YELLOW << elapsed_secs << "s" << COLOR_NC << std::endl;
-        in.close();
+        // Restore index to beginning of file
+        index.clear();
+        index.seekg(0, std::ios::beg);
     }
     dictionary.close();
     return EXIT_SUCCESS;

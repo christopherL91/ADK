@@ -10,7 +10,7 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(OBJECTS) -o $@
 
 .cpp.o:
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $<
 
 clean:
 	-rm -rf *.o $(EXECUTABLE)

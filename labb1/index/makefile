@@ -3,12 +3,13 @@ CFLAGS=-c -Wall -std=c++11 -O3
 INDEXFILE=ut
 EXECUTABLE=index
 TOKENIZEREXEC=tokenizer
+DICTIONARY=/var/tmp/korpus
 
 all: index
 
-$(INDEXFILE): tokenizer.c korpus
+$(INDEXFILE): tokenizer.c $(DICTIONARY)
 	cc ./tokenizer.c -o $(TOKENIZEREXEC)
-	./$(TOKENIZEREXEC) < korpus | \
+	./$(TOKENIZEREXEC) < $(DICTIONARY) | \
 		LC_COLLATE='C' LC_ALL='C' sort > $(INDEXFILE)
 
 index: main.o gen_index.o $(INDEXFILE)
