@@ -24,4 +24,4 @@ gen_index.o: gen_index.cpp
 clean:
 	rm -rf *.o $(EXECUTABLE) $(TOKENIZEREXEC)
 	rm -rf *.idx
-	
+
