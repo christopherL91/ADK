@@ -22,9 +22,9 @@ void generateIndex(std::istream &in) {
     //Create range-index
     std::vector<std::shared_ptr<std::ostream>> files;
     for(int i = 0; i < 7; i++) {
-        const char c = (char) letters[i];
-        const char filename[] = {c, '.', 'i', 'd', 'x', '\0'};
-        files.push_back(std::make_shared<std::ofstream>(filename));
+        char buffer[1024];
+        snprintf(buffer, sizeof(buffer), "/var/tmp/%c.idx",letters[i]);
+        files.push_back(std::make_shared<std::ofstream>(buffer));
     }
 
     while (in >> word >> offset) {
