@@ -1,19 +1,19 @@
 CC=g++
 CFLAGS=-c -Wall -std=c++11 -O3
-ADK_PATH=../adk14/labb1
 INDEXFILE=ut
 EXECUTABLE=index
 TOKENIZEREXEC=tokenizer
 
 all: index
 
-file: tokenizer.c
+$(INDEXFILE): tokenizer.c korpus
 	export LC_COLLATE=C
-	cc $(ADK_PATH)/tokenizer.c -o $(TOKENIZEREXEC)
-	$(TOKENIZEREXEC) < $(ADK_PATH)/korpus | sort > ./$(INDEXFILE)
+	cc ./tokenizer.c -o $(TOKENIZEREXEC)
+	./$(TOKENIZEREXEC) < korpus | sort > $(INDEXFILE)
 
-index: main.o gen_index.o
+index: main.o gen_index.o $(INDEXFILE)
 	$(CC) main.o gen_index.o -o $(EXECUTABLE)
+	./$(EXECUTABLE) $(INDEXFILE)
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp

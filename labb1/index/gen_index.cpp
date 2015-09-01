@@ -4,6 +4,7 @@
 #include <algorithm> // ::tolower
 #include <fstream> // file streams
 #include <sstream> // string stream
+#include <memory> // shared pointers.
 
 /**
     This function will generate an index for the given input.

@@ -1,3 +1,6 @@
 konkordans
 index/index
 .DS_Store
+**.idx
+index/tokenizer
+index/ut
