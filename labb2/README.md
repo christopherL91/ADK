@@ -9,3 +9,11 @@ ADK-Spelling
 * make
 
 ![evil](http://www.quickmeme.com/img/cb/cbecfb41e2543db9171c14913a262b0a928bda37b5d57adc98c45e6c78028343.jpg)
+------------
+
+###Example:###
+
+```bash
+	make
+	cat ordlist.txt testfall/testord1.indata | java Main
+```
