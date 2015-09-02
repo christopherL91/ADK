@@ -1,6 +1,4 @@
-#Konkordans 📖🔎#
--
-
+#Konkordans :book: #
 
 ##At first when we created our index we was like##
 
@@ -10,7 +8,7 @@
 
 [![Deeper](http://a.abcnews.com/images/Health/HT_sam_griner_then_02_jef_150413_16x9_992.jpg)]()
 
-###Se it in action 😎###
+###Se it in action :sunglasses:###
 
 [![asciicast](https://asciinema.org/a/3z9764ywdi65xpncecej8g67f.png)](https://asciinema.org/a/3z9764ywdi65xpncecej8g67f)
 
