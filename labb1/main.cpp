@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <regex>
+#include <chrono>
 
 const char *COLOR_NC="\e[0m";
 const char *COLOR_WHITE="\e[1;37m";
@@ -90,7 +91,7 @@ int main(int argc, char const *argv[]) {
         if(word == "") {
             continue;
         }
-        clock_t begin = clock();
+        auto start = std::chrono::steady_clock::now();
 
         std::transform(word.begin(), word.end(), word.begin(), ::tolower);
         // filehandler.
@@ -134,7 +135,8 @@ int main(int argc, char const *argv[]) {
                 int numresults = positions.size();
                 bool printresults = true;
                 if(numresults > 25) {
-                    std::cout << "More than 25 results found. Do you want to output them? [Y/n] ";
+                    std::cout << COLOR_LIGHT_RED << "More than 25 results found. Do you want to output them? [Y/n] "
+                        << COLOR_NC;
                     std::string answer;
                     std::regex ido ("y(es)?", std::regex_constants::icase);
                     std::getline( std::cin, answer );
@@ -154,25 +156,27 @@ int main(int argc, char const *argv[]) {
                         dictionary.read(buffer,length);
                         // Remove all newline
                         std::string output(buffer, 0, dictionary.gcount());
-			if(output.find("\n") != -1 ) {
-				output.replace(output.find("\n"), 1, " ");
-			}		
+            			if(output.find("\n") != -1 ) {
+            				output.replace(output.find("\n"), 1, " ");
+            			}
                         std::cout << output << std::endl;
                     }
                 }
+                std::cout << std::endl << COLOR_LIGHT_BLUE << "Number of instances found: "
+                    << COLOR_RED << numresults << COLOR_NC << std::endl;
                 break;
             }
         }
         if(!found) {
             std::cerr << "Word not found!" << std::endl;
         }
-        clock_t end = clock();
-        double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-        std::cout << std::endl << COLOR_LIGHT_BLUE << "Time to perform search: " << COLOR_YELLOW << elapsed_secs << "s" << COLOR_NC << std::endl;
+        auto end = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
+        std::cout << COLOR_LIGHT_BLUE << "Time to perform search: "
+            << COLOR_RED << elapsed << "ms" << COLOR_NC << std::endl;
         // Restore index to beginning of file
         index.clear();
         index.seekg(0, std::ios::beg);
     }
-    dictionary.close();
     return EXIT_SUCCESS;
 }
