@@ -1,6 +1,8 @@
-/* Labb 2 i DD1352 Algoritmer, datastrukturer och komplexitet    */
-/* Se labbanvisning under kurswebben https://www.kth.se/social/course/DD1352 */
-/* Ursprunglig författare: Viggo Kann KTH viggo@nada.kth.se      */
+/*
+*  Credits:
+*  Ursprunglig författare: Viggo Kann KTH viggo@nada.kth.se
+*/
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,17 +12,15 @@ import java.util.List;
 
 public class Main {
     public static void main(String args[]) throws IOException {
-        //    long t1 = System.currentTimeMillis();
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
-        // Säkrast att specificera att UTF-8 ska användas, för vissa system har annan
-        // standardinställning för teckenkodningen.
         List<String> wordList = readWordList(stdin);
         String word;
+
         while ((word = stdin.readLine()) != null) {
             ClosestWords closestWords = new ClosestWords(word, wordList);
-            System.out.print(word + " (" + closestWords.getMinDistance() + ")");
+            System.out.printf("%s (%d)",word,closestWords.getMinDistance());
             for (String w : closestWords.getClosestWords()) {
-                System.out.print(" " + w);
+                System.out.printf(" %s",w);
             }
             System.out.println();
         }
@@ -28,12 +28,13 @@ public class Main {
 
     public static List<String> readWordList(BufferedReader input) throws IOException {
         LinkedList<String> list = new LinkedList<String>();
-        while (true) {
-            String s = input.readLine();
-            if (s.equals("#")) {
+        String line;
+
+        while ((line = input.readLine()) != null) {
+            if (line.equals("#")) {
                 break;
             }
-            list.add(s);
+            list.add(line);
         }
         return list;
     }
