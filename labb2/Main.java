@@ -13,12 +13,13 @@ import java.util.List;
 public class Main {
     public static void main(String args[]) throws IOException {
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
-        Trie wordList = readWordList(stdin);
+        Trie trie = readWordList(stdin);
         String word;
 
         while ((word = stdin.readLine()) != null) {
-            ClosestWords closestWords = new ClosestWords(word, wordList);
-            System.out.printf("%s (%d)",word,closestWords.getMinDistance());
+            CloserWords closestWords = new CloserWords(word, trie);
+            int minDistance = closestWords.getMinDistance();
+            System.out.printf("%s (%d)",word, minDistance);
             for (String w : closestWords.getClosestWords()) {
                 System.out.printf(" %s",w);
             }

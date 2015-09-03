@@ -1,4 +1,4 @@
-JFLAGS= -g
+JFLAGS=
 JC= javac
 JVM = java
 .SUFFIXES: .java .class
@@ -7,7 +7,7 @@ JVM = java
 
 CLASSES = \
 	Main.java \
-	ClosestWords.java \
+	CloserWords.java \
 	Trie.java
 
 default: classes
