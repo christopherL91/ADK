@@ -5,7 +5,8 @@ import java.util.Map;
 
 public class CloserWords {
     private TreeSet<String> closestWords = null;
-    private int closestDistance = Integer.MAX_VALUE;
+    private int closestDistance = 40;
+    private int maxCost = 40;
 
     public CloserWords(String searchWord, Trie dictionary) {
         this.closestWords = new TreeSet<String>();
@@ -18,10 +19,8 @@ public class CloserWords {
             currentRow[i] = i;
         }
 
-        for(int i = 0; i < 128; i++) {
-            if(dictionary.children[i] != null) {
-                this.searchRecursive(dictionary.children[i],(char) i,searchWord,currentRow);
-            }
+        for(Map.Entry<Character, Trie> entry: dictionary.children.entrySet()) {
+            this.searchRecursive(entry.getValue(),entry.getKey(),searchWord,currentRow);
         }
     }
 
@@ -49,10 +48,13 @@ public class CloserWords {
             this.closestWords.add(node.word);
             this.closestDistance = distance;
         }
-
-        for(int i = 0; i < 128; i++) {
-            if(node.children[i] != null) {
-                this.searchRecursive(node.children[i],(char) i,searchWord,currentRow);
+        int minCost = currentRow[0];
+        for(int i = 1; i < currentRow.length; i++) {
+            minCost = Math.min(minCost, currentRow[i]);
+        }
+        if(minCost <= this.closestDistance) {
+            for(Map.Entry<Character, Trie> entry: node.children.entrySet()) {
+                this.searchRecursive(entry.getValue(),entry.getKey(),searchWord,currentRow);
             }
         }
     }

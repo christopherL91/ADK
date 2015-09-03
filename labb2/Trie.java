@@ -3,24 +3,24 @@ import java.util.Map;
 import java.util.Arrays;
 
 public class Trie {
-    Trie[] children;
+    HashMap<Character, Trie> children;
     String word;
 
     public Trie() {
         this.word = null;
-        this.children = new Trie[256];
+        this.children = new HashMap<>();
     }
 
     public void insert(String word) {
         Trie node = this;
         for (int i = 0; i < word.length(); i++) {
             char letter = word.charAt(i);
-            if(node.children[letter] == null) {
+            if(!node.children.containsKey(letter)) {
                 Trie nextNode = new Trie();
-                node.children[letter] = nextNode;
+                node.children.put(letter,nextNode);
                 node = nextNode;
             } else {
-                node = node.children[letter];
+                node = node.children.get(letter);
             }
         }
         node.word = word;
