@@ -13,7 +13,7 @@ import java.util.List;
 public class Main {
     public static void main(String args[]) throws IOException {
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
-        List<String> wordList = readWordList(stdin);
+        Trie wordList = readWordList(stdin);
         String word;
 
         while ((word = stdin.readLine()) != null) {
@@ -26,16 +26,16 @@ public class Main {
         }
     }
 
-    public static List<String> readWordList(BufferedReader input) throws IOException {
-        LinkedList<String> list = new LinkedList<String>();
+    public static Trie readWordList(BufferedReader input) throws IOException {
+        Trie trie = new Trie();
         String line;
 
         while ((line = input.readLine()) != null) {
             if (line.equals("#")) {
                 break;
             }
-            list.add(line);
+            trie.insert(line);
         }
-        return list;
+        return trie;
     }
 }

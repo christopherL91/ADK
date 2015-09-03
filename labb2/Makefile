@@ -7,7 +7,8 @@ JVM = java
 
 CLASSES = \
 	Main.java \
-	ClosestWords.java
+	ClosestWords.java \
+	Trie.java
 
 default: classes
 
