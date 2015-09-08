@@ -4,11 +4,12 @@ INDEXFILE=ut
 EXECUTABLE=index
 TOKENIZEREXEC=tokenizer
 DICTIONARY=/var/tmp/korpus
+INDEXFILES:=/var/tmp/*.idx
 
 all: index
 
 $(INDEXFILE): tokenizer.c $(DICTIONARY)
-	cc ./tokenizer.c -o $(TOKENIZEREXEC)
+	LC_COLLATE='C' LC_ALL='C' cc ./tokenizer.c -o $(TOKENIZEREXEC)
 	./$(TOKENIZEREXEC) < $(DICTIONARY) | \
 		LC_COLLATE='C' LC_ALL='C' sort > $(INDEXFILE)
 
@@ -24,5 +25,5 @@ gen_index.o: gen_index.cpp
 
 clean:
 	rm -rf *.o $(EXECUTABLE) $(TOKENIZEREXEC) $(INDEXFILE)
-	rm -rf *.idx
+	rm -rf $(INDEXFILES)
 

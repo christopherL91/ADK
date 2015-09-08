@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <regex>
+#include <cmath>
 #include <chrono>
 
 const char *COLOR_NC="\e[0m";
@@ -62,12 +63,33 @@ std::string base_name(std::string const & path) {
   return path.substr(path.find_last_of("/\\") + 1);
 }
 
-const unsigned char letters[] = {'a', 'e','h','l','o','s','t'};
-
-const char getFileName(unsigned char first) {
-    int i;
-    for(i = 0; first >= letters[i] && i < 7; ++i) {}
-    return letters[i-1];
+unsigned int hashString(std::string word, int len) {
+    int hash = 0;
+    const char *str = word.c_str();
+    unsigned char c;
+    int base = 29;
+    int power = pow(base, len);
+    for(int i = 0; i < len && (c = *(str++)); i++) {
+        int val = c - 'a';
+        if(c > 'z') {
+            switch (c) {
+                case 229:
+                    val = 26;
+                break;
+                case 228:
+                    val = 27;
+                break;
+                case 246:
+                    val = 28;
+                break;
+                default:
+                val = 27;
+            }
+        }
+        hash += val * power;
+        power /= base;
+    }
+    return hash;
 }
 
 int main(int argc, char const *argv[]) {
@@ -81,10 +103,7 @@ int main(int argc, char const *argv[]) {
 
     std::string file_glob = argv[2];
     auto filenames = glob(file_glob);
-    std::map<std::string,std::shared_ptr<std::istream>> files;
-    for(auto filename: filenames) {
-        files[filename] = std::make_shared<std::ifstream>(filename);
-    }
+    int numfiles = filenames.size();
     std::string word;
 
     while (std::cout << COLOR_LIGHT_GREEN << "Search for a word> " << COLOR_NC,std::getline(std::cin, word)) {
@@ -92,24 +111,13 @@ int main(int argc, char const *argv[]) {
             continue;
         }
         auto start = std::chrono::steady_clock::now();
+        std::chrono::steady_clock::time_point end;
 
         std::transform(word.begin(), word.end(), word.begin(), ::tolower);
-        // filehandler.
-        char first = word[0];
-        char c = getFileName(first);
-        std::string file_name = "";
-        for(auto glob_filename : filenames) {
-            if(base_name(glob_filename)[0] == c) {
-                file_name = glob_filename;
-                break;
-            }
-        }
-        if(file_name == "") {
-            std::cerr << "Index file not found!" << std::endl;
-            dictionary.close();
-            return EXIT_FAILURE;
-        }
-        std::istream &index = *files[file_name];
+        int filenum = hashString(word, 4) % numfiles;
+        char filename[1024];
+        snprintf(filename, sizeof(filename), "/var/tmp/%3d.idx", filenum);
+        std::ifstream index(filename);
         if(!index) {
             std::cerr << "Could not open file" << std::endl;
             dictionary.close();
@@ -134,8 +142,11 @@ int main(int argc, char const *argv[]) {
                 }
                 int numresults = positions.size();
                 bool printresults = true;
+                end = std::chrono::steady_clock::now();
                 if(numresults > 25) {
-                    std::cout << COLOR_LIGHT_RED << "More than 25 results found. Do you want to output them? [Y/n] "
+                    std::cout << COLOR_LIGHT_RED
+                        << numresults
+                        << " results found. Do you want to output them? [Y/n] "
                         << COLOR_NC;
                     std::string answer;
                     std::regex ido ("y(es)?", std::regex_constants::icase);
@@ -156,9 +167,9 @@ int main(int argc, char const *argv[]) {
                         dictionary.read(buffer,length);
                         // Remove all newline
                         std::string output(buffer, 0, dictionary.gcount());
-            			if(output.find("\n") != -1 ) {
-            				output.replace(output.find("\n"), 1, " ");
-            			}
+                        if(output.find("\n") != -1 ) {
+                            output.replace(output.find("\n"), 1, " ");
+                        }
                         std::cout << output << std::endl;
                     }
                 }
@@ -170,10 +181,10 @@ int main(int argc, char const *argv[]) {
         if(!found) {
             std::cerr << "Word not found!" << std::endl;
         }
-        auto end = std::chrono::steady_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
+        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end-start).count();
+        double ms = elapsed/1000000.0;
         std::cout << COLOR_LIGHT_BLUE << "Time to perform search: "
-            << COLOR_RED << elapsed << "ms" << COLOR_NC << std::endl;
+            << COLOR_RED << ms << "ms" << COLOR_NC << std::endl;
         // Restore index to beginning of file
         index.clear();
         index.seekg(0, std::ios::beg);
