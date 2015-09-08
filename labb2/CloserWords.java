@@ -5,17 +5,17 @@ import java.util.Map;
 import java.util.Collections;
 
 public class CloserWords {
-    private ArrayList<String> closestWords = null;
+    private ArrayList<char[]> closestWords = null;
     private int closestDistance;
 
-    public CloserWords(String searchWord, Trie dictionary) {
-        this.closestWords = new ArrayList<String>();
-        int wordLength = searchWord.length();
-        this.closestDistance = 40 - wordLength;
+    public CloserWords(char[] searchWord, Trie dictionary) {
+        this.closestWords = new ArrayList<char[]>();
+        int wordLength = searchWord.length;
+        this.closestDistance = 40;
         this.search(searchWord, wordLength, dictionary);
     }
 
-    private void search(String searchWord, int wordLength, Trie dictionary) {
+    private void search(char[] searchWord, int wordLength, Trie dictionary) {
         int[] currentRow = new int[wordLength + 1];
         for(int i = 0; i < currentRow.length; i++) {
             currentRow[i] = i;
@@ -39,14 +39,14 @@ public class CloserWords {
         }
     }
 
-    private void searchRecursive(Trie node, char letter, String searchWord, int wordLength, int[] previousRow) {
+    private void searchRecursive(Trie node, char letter, char[] searchWord, int wordLength, int[] previousRow) {
         int[] currentRow = new int[wordLength + 1];
         currentRow[0] = previousRow[0] + 1;
         for (int i = 1; i < currentRow.length; i++) {
             int insertCost = currentRow[i - 1] + 1;
             int deleteCost = previousRow[i] + 1;
             int replaceCost;
-            if(searchWord.charAt(i-1) == letter) {
+            if(searchWord[i-1] == letter) {
                 replaceCost = previousRow[i - 1];
             } else {
                 replaceCost = previousRow[i - 1] + 1;
@@ -55,7 +55,7 @@ public class CloserWords {
         }
 
         int distance = currentRow[currentRow.length - 1];
-        String word = node.word;
+        char[] word = node.word;
         if(word != null && distance < this.closestDistance) {
             this.closestWords.clear();
             this.closestWords.add(word);
@@ -93,8 +93,12 @@ public class CloserWords {
         return this.closestDistance;
     }
 
-    public List<String> getClosestWords() {
-        Collections.sort(this.closestWords);
-        return new ArrayList<String>(this.closestWords);
+    public ArrayList<String> getClosestWords() {
+        ArrayList<String> words = new ArrayList<String>(this.closestWords.size());
+        for(char[] chars: this.closestWords) {
+            words.add(new String(chars));
+        }
+        Collections.sort(words);
+        return words;
     }
 }

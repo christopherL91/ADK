@@ -1,14 +1,13 @@
 JFLAGS=
 JC= javac
-JVM = java
+JVM = java -Xmx1024m
 .SUFFIXES: .java .class
 .java.class:
 	$(JC) $(JFLAGS) $*.java
 
 CLASSES = \
 	Main.java \
-	CloserWords.java \
-	Trie.java
+	MatrixWords.java
 
 default: classes
 

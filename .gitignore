@@ -1,3 +1,5 @@
-DS_Store
-*.o
+.DS_Store
+**/*.o
 adk14
+**/*.class
+**/*.txt

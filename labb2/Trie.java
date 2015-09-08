@@ -1,20 +1,32 @@
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.BitSet;
 
 public class Trie {
+    private int size;
+    private int nodeSize;
+    private int[] base;
+    private short[] check;
+    private int[] tail;
+    private int last;
+    private BitSet term;
+    private CharSequence tails;
+
+    char[] word;
     Trie[] children;
-    String word;
+    int numchilds = 0;
 
     public Trie() {
         this.children = new Trie[29];
     }
 
-    public void insert(String word) {
+    public void insert(char[] word) {
         Trie node = this;
-        for (int i = 0; i < word.length(); i++) {
-            char letter = word.charAt(i);
-            int index = -1;
+        int depth = 0;
+        for (int i = 0; i < word.length; i++) {
+            char letter = word[i];
+            int index = letter - 'a';
             if(letter <= 'z') {
                 index = letter - 'a';
             } else {
@@ -26,48 +38,16 @@ public class Trie {
                     index = 26;
                 }
             }
+            // depth++;
+            // if(depth > 4) {
+            //     node = this;
+            //     depth = 0;
+            // }
             if(node.children[index] == null) {
                 node.children[index] = new Trie();
             }
             node = node.children[index];
         }
         node.word = word;
-    }
-
-    // private void createString(StringBuilder result, boolean first, StringBuilder indentation) {
-    //     result.append(indentation.toString());
-    //     result.append("| ");
-    //     first = true;
-    //     // indentation.append("  ");
-    //     for (Map.Entry<Character, Trie> entry : this.children.entrySet()) {
-    //         result.append(indentation.toString());
-    //         result.append("\n");
-    //         result.append(indentation.toString());
-    //         result.append("+- "+entry.getKey() + "\n");
-    //         Trie node = entry.getValue();
-    //         StringBuilder nextIndent = new StringBuilder();
-    //         nextIndent.append(indentation.toString());
-    //         if(this.children.size() > 1) {
-    //             nextIndent.append("|  ");
-    //         } else {
-    //             nextIndent.append("   ");
-    //         }
-    //         node.createString(result, first, nextIndent);
-    //         first = false;
-    //     }
-    // }
-    // public String toString() {
-    //     StringBuilder result = new StringBuilder();
-    //     StringBuilder indentation = new StringBuilder();
-    //     result.append("()\n");
-    //     this.createString(result, true, indentation);
-    //     return result.toString();
-    // }
-    public static void main(String[] args) {
-        Trie trie = new Trie();
-        trie.insert("godis");
-        trie.insert("gott");
-        trie.insert("adam");
-        System.out.println(trie);
     }
 }
