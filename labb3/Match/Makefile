@@ -1,16 +1,17 @@
 CC=g++
 CFLAGS=-c -Wall -std=c++11 -O3
-SOURCES:=*.cpp
-OBJECTS:=$(SOURCES:.cpp=.o)
 EXECUTABLE=match
 
-all: $(SOURCES) $(EXECUTABLE)
+all: match
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $@
+match: main.o biparte.o
+	$(CC) main.o biparte.o -o $(EXECUTABLE)
 
-.cpp.o:
-	$(CC) $(CFLAGS) $<
+main.o: main.cpp
+	$(CC) $(CFLAGS) main.cpp
+
+biparte.o: biparte.cpp
+	$(CC) $(CFLAGS) biparte.cpp
 
 clean:
-	-rm -rf *.o $(EXECUTABLE)
+	rm -rf *.o $(EXECUTABLE)

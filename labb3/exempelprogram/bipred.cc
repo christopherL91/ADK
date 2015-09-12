@@ -33,7 +33,7 @@ void writeFlowGraph() {
   int v = 23, e = 0, s = 1, t = 2;
 
   // Skriv ut antal hörn och kanter samt källa och sänka
-  cout << v << "\n" << s << " " << t << "\n" << e << "\n"; 
+  cout << v << "\n" << s << " " << t << "\n" << e << "\n";
   for (int i = 0; i < e; ++i) {
     int u, v, c;
     // Kant från u till v med kapacitet c
