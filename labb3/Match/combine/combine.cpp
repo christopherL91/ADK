@@ -1,13 +1,14 @@
 #include <iostream>
-#include <vector>
-#include <array>
+#include <sstream>
 #include <queue>
+#include <array>
+#include <vector>
 #include <climits>
 #include <algorithm>
-#include <sstream>
 
 using namespace std;
 
+int num_u,num_v;
 #define MAX_NODES 4001
 
 struct edge {
@@ -24,9 +25,33 @@ struct edge {
     struct edge *reverse;
 };
 
-void clear( std::queue<int> &q ) {
-   queue<int> empty;
-   swap(q, empty );
+void clear(queue<int> &q ) {
+    queue<int> empty;
+    swap(q, empty );
+}
+
+string read_biparte() {
+    std::stringstream output;
+    int total_vertices,total_edges;
+    int to,from, default_cost = 1;
+    std::cin >> num_u >> num_v;
+    std::cin >> total_edges;
+    total_vertices = num_u + num_v + 2; // inlude all vertices + s and t
+    output << total_vertices << std::endl << 1 << " " << total_vertices << std::endl;
+    output << total_edges + num_u + num_v << std::endl;
+    for (int i = 0; i < num_u; ++i) {
+        output << 1 << " " << i+2 << " " <<  default_cost << std::endl;
+    }
+
+    for(int i = 0; i < total_edges; ++i) {
+        std::cin >> from >> to;
+        output << from + 1 << " " << to + 1 << " " << default_cost << std::endl;
+    }
+
+    for (int i = 0; i < num_v; ++i) {
+        output << i+num_u+2 << " " << total_vertices << " " <<  default_cost << std::endl;
+    }
+    return output.str();
 }
 
 int calculate_flow(array<vector<edge*>, MAX_NODES> graph, int s, int t, int num_nodes) {
@@ -68,13 +93,16 @@ int calculate_flow(array<vector<edge*>, MAX_NODES> graph, int s, int t, int num_
 
 int main(int argc, char const *argv[]) {
     std::ios::sync_with_stdio(false);
-    int num_nodes,num_edges,s,t;
     array<vector<edge*>, MAX_NODES> graph;
+    int num_nodes,num_edges,s,t;
     fill(graph.begin(), graph.end(), vector<edge*>(5));
 
-    cin >> num_nodes;
-    cin >> s >> t;
-    cin >> num_edges;
+    // Read graph from stdin.
+    stringstream out(read_biparte());
+
+    out >> num_nodes;
+    out >> s >> t;
+    out >> num_edges;
 
     int u,v,c;
     while(cin >> u >> v >> c) {
