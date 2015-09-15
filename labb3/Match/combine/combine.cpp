@@ -9,7 +9,7 @@
 using namespace std;
 
 int num_u,num_v;
-#define MAX_NODES 4001
+#define MAX_NODES 20003
 
 struct edge {
     edge(int capacity, int s, int t) {
@@ -30,31 +30,31 @@ void clear(queue<int> &q ) {
     swap(q, empty );
 }
 
-string read_biparte() {
-    std::stringstream output;
-    int total_vertices,total_edges;
-    int to,from, default_cost = 1;
-    std::cin >> num_u >> num_v;
-    std::cin >> total_edges;
-    total_vertices = num_u + num_v + 2; // inlude all vertices + s and t
-    output << total_vertices << std::endl << 1 << " " << total_vertices << std::endl;
-    output << total_edges + num_u + num_v << std::endl;
-    for (int i = 0; i < num_u; ++i) {
-        output << 1 << " " << i+2 << " " <<  default_cost << std::endl;
-    }
-
-    for(int i = 0; i < total_edges; ++i) {
-        std::cin >> from >> to;
-        output << from + 1 << " " << to + 1 << " " << default_cost << std::endl;
-    }
-
-    for (int i = 0; i < num_v; ++i) {
-        output << i+num_u+2 << " " << total_vertices << " " <<  default_cost << std::endl;
-    }
-    return output.str();
+void add_edge(int u, int v, array<vector<edge*>, MAX_NODES> &graph) {
+    int default_cost = 1;
+    edge *e = new edge(default_cost,u,v);
+    edge *rev = new edge(0,v,u);
+    e -> reverse = rev;
+    rev -> reverse = e;
+    graph[u].push_back(e);
+    graph[v].push_back(rev);
 }
 
-int calculate_flow(array<vector<edge*>, MAX_NODES> graph, int s, int t, int num_nodes) {
+void read_biparte(int total_vertices, int total_edges, int num_u, int num_v, int s, int t, array<vector<edge*>, MAX_NODES> &graph) {
+    for(int i = 0; i < num_u; ++i) {
+        add_edge(s,i+2, graph);
+    }
+    int from,to;
+    for(int i = 0; i < total_edges; ++i) {
+        std::cin >> from >> to;
+        add_edge(from +1, to +1, graph);
+    }
+    for(int i = 0; i < num_v; ++i) {
+        add_edge(num_u+i+2,t, graph);
+    }
+}
+
+int calculate_flow(array<vector<edge*>, MAX_NODES> &graph, int s, int t, int num_nodes) {
     int flow = 0;
     queue<int> q;
     while(true) {
@@ -94,41 +94,41 @@ int calculate_flow(array<vector<edge*>, MAX_NODES> graph, int s, int t, int num_
 int main(int argc, char const *argv[]) {
     std::ios::sync_with_stdio(false);
     array<vector<edge*>, MAX_NODES> graph;
-    int num_nodes,num_edges,s,t;
     fill(graph.begin(), graph.end(), vector<edge*>(5));
 
+    int total_vertices,total_edges;
+    std::cin >> num_u >> num_v;
+    std::cin >> total_edges;
+    total_vertices = num_u + num_v + 2; // inlude all vertices + s and t
+    int s = 1;
+    int t = total_vertices;
+
     // Read graph from stdin.
-    stringstream out(read_biparte());
+    read_biparte(total_vertices, total_edges, num_u, num_v, s, t, graph);
+    total_edges += num_u + num_v;
+    calculate_flow(graph,s,t,total_edges);
 
-    out >> num_nodes;
-    out >> s >> t;
-    out >> num_edges;
-
-    int u,v,c;
-    while(cin >> u >> v >> c) {
-        edge *e = new edge(c,u,v);
-        edge *rev = new edge(0,v,u);
-        e -> reverse = rev;
-        rev -> reverse = e;
-        graph[u].push_back(e);
-        graph[v].push_back(rev);
-    }
-    int max_flow = calculate_flow(graph,s,t,num_nodes);
-
-    cout << num_nodes << endl;
-    cout << s << " " << t << " " << max_flow << endl;
+    cout << num_u << " " << num_v << endl;
 
     stringstream output;
     int num_lines = 0;
-    for(auto list: graph) {
+    for(int i = 0; i < total_vertices; ++i) {
+        auto list = graph[i+1];
+        if(i+1 == s) {
+            continue;
+        }
         for(edge *e: list) {
             if(e != nullptr && e->flow > 0) {
+                if(e -> t == t) {
+                    goto after;
+                }
                 ++num_lines;
-                output << e -> s << " " << e -> t << " " << e -> flow << endl;
+                output << (e -> s - 1) << " " << (e -> t - 1) << endl;
             }
             delete e;
         }
     }
+after:
     cout << num_lines << endl;
     cout << output.str();
     return EXIT_SUCCESS;
